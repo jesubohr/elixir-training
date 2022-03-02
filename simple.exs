@@ -72,3 +72,14 @@ tuple = {:ok, "saluton"}
 elem(tuple, 1) # return "saluton"
 put_elem(tuple, 1, "mondo") # return {:ok, "mondo"}, the value ':ok' is shared
 # tuple -> {:ok, "saluton"}
+
+
+# Basic Operators
+++ -- # Manipulate List
+<> # String concatenation
+and or not # Boolean operators (they expect bool-evaluated value)
+&& || ! # These accept any type of value
+== != === !== < > <= >= # Comparison operators (== and === differ in type comparison)
+
+# SORTING ORDER
+# number, atom, reference, function, port, pid, tuple, map, list, bitstring
