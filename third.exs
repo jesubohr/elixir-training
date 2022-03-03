@@ -96,3 +96,44 @@ end
 # Here b is nil and sep is " " if no value is given
 # Is recommended to separate a function if it has multiple clauses
 # Putting first the function head with the default values
+
+# Recursion
+# There are not normal loop like in imperatives languages, so its necessary recursion
+defmodule For do
+  def range(init \\ 0, final)
+
+  def range(init, final) when init < final do
+    IO.puts(init)
+    range(init + 1, final)
+  end
+
+  def range(init, final) when init == final do
+    :ok
+  end
+end
+
+# Algorithms recreation
+defmodule Array do
+  # Sum Method
+  def sum(list, acc \\ 0)
+
+  def sum([head | tail], acc) do
+    sum(tail, head + acc)
+  end
+
+  def sum([], acc) do
+    acc
+  end
+
+  # Fill Method
+  def fill(size, value \\ 0, arr \\ [])
+
+  def fill(size, value, arr) when size > 0 do
+    new_arr = arr ++ [value]
+    fill(size - 1, new_arr, value)
+  end
+
+  def fill(0, _value, arr) do
+    arr
+  end
+end
