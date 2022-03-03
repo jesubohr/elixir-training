@@ -40,3 +40,59 @@ users[:james].age
 users = put_in(users[:james].age, 25)
 users = update_in(users[:james].name, fn _ -> "Jesus" end)
 # Updating can be done in these two ways
+
+# Modules and Functions
+defmodule STR do
+  def greet(name) do
+    greetPriv(name)
+  end
+
+  defp greetPriv(name) do
+    "Saluton from mom #{name}"
+  end
+
+  def isZero?(0), do: true
+
+  def isNatural?(x) when x > 0 do
+    true
+  end
+end
+
+# Modules group functions in them
+# Named functions can be public or private
+# Can use guard and multiple clauses too
+# The '?' means it returns boolean value
+
+# Function Capturing
+# This is a shorcut for creating anonymous functions
+fun = &STR.greet/1
+fun.("James")
+# returns the same output as if we called STR.greet("James")
+
+# Can be used with operators too
+subt = &-/2
+subt.(3, 2)
+# returns 1
+
+# Use &n to capture the nth parameter of the function
+greet = &"Saluton #{&1}"
+greet.("James")
+# returns "Saluton James"
+# similar to the syntax 'fn name -> "Saluton #{name}" end'
+
+# Default Values
+defmodule Concat do
+  def join(a, b \\ nil, sep \\ " ")
+
+  def join(a, b, _sep) when is_nil(b) do
+    a
+  end
+
+  def join(a, b, sep) do
+    a <> sep <> b
+  end
+end
+
+# Here b is nil and sep is " " if no value is given
+# Is recommended to separate a function if it has multiple clauses
+# Putting first the function head with the default values
