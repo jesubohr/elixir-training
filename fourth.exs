@@ -27,6 +27,8 @@ Enum.take(stream, 5)
 # Focus on Enums first and just use Stream on particular scenarios
 # when laziness is required like big collections, files or slow resources.
 
+# -----------------------------------------------------------------------------
+
 # Processes
 
 # Spawn
@@ -106,4 +108,5 @@ Agent.update(:agent, fn map -> Map.put(map, :foo, "bar") end)
 Agent.get(:agent, fn map -> Map.get(map, :foo) end)
 # returns "bar"
 
-# IO
+# -----------------------------------------------------------------------------
+
