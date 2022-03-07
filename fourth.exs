@@ -110,3 +110,40 @@ Agent.get(:agent, fn map -> Map.get(map, :foo) end)
 
 # -----------------------------------------------------------------------------
 
+# IO and File System
+
+# IO module allows reading and writing to standard input/output,
+# standard error, files, sockets, pipes, etc.
+IO.puts("Saluton Mondo")
+# print "Saluton Mondo"
+IO.gets("Yes or No? ")
+# print "Yes or No?" and then print the given answer
+
+# File module allows working with files and directories
+# Files are opened in binary mode by default, so it requires IO.binread and IO.binwrite
+{:ok, file} = File.open("file.md", [:write, :utf8])
+IO.binwrite(file, "Saluton Mondo")
+# Close the file
+File.close(file)
+# Read the file
+File.read("file.md")
+# returns {:ok, "Saluton Mondo"}
+
+# File module contains many useful methods named after UNIX commands,
+# like File.rm, File.rm_rf, File.mkdir, File.mkdir_p, File.cp, File.cp_r, etc.
+
+# They also have another variant with a "!" at the end, which does return
+# just the result instead of a tuple, and raises an error if any error occurs.
+File.read!("file.md")
+# returns "Saluton Mondo"
+File.rm!("unknown_file.md")
+# raises ** (File.Error) could not remove "unknown_file.md": no such file or directory
+
+# Path module facilitates working with paths
+Path.join(Path.join("home", "user"), "file.md")
+# returns "home/user/file.md"
+Path.expand("~/file.md")
+# returns "/home/user/file.md"
+
+# Is preferred to use Path module instead of directly working with strings
+# because it provides a better API that takes care of platform specifics
