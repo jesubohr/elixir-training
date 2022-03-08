@@ -154,3 +154,26 @@ end
 # to change how the module is compiled.
 
 # -----------------------------------------------------------------------------
+
+# Structs
+# Build on top of maps, they provide compile-time type checking and default values.
+# They take the name of the module they are defined in and then acces them
+# with map-like syntax.
+# Can be used for pattern matching too.
+defmodule User do
+  defstruct name: "John Doe", age: 18
+  # Define two fields with its default values.
+  # If not specified, the default value is nil.
+end
+# Putting this in console: %User{}
+# returns this: %User{age: 18, name: "John Doe"}
+
+# When combining fields, nil default values come first.
+defmodule User do
+  @enforce_keys :name
+  defstruct [:email, name: "John Doe", age: 18]
+end
+# @enforce_keys is an attribute to enforce that certain keys are present.
+# If a key is not present, it will raise an error.
+# Must be like this: %User{name: "James"}
+# to returns this: %User{age: 18, email: nil, name: "James"}
