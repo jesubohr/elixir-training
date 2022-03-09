@@ -119,3 +119,118 @@ for <<c <- " salute monde ">>, c != ?\s, into: "", do: <<c>>
 
 for {key, value} <- %{:a => 1, :b => 2, :c => 3}, into: %{}, do: {key, value * 2}
 # returns %{a => 2, b => 4, c => 6}
+
+# ------------------------------------------------------------------------------
+
+# Sigils
+# One of the mechanisms for working with textual data.
+# They start with the '~' symbol and followed by a letter that represents
+# the sigil and then a delimiter. Optionally, modifiers can be added.
+
+# The most common one are regular expressions.
+# They support regular used regex modifiers.
+"abc" =~ ~r/^[a-z]{3}$/i
+# returns true because it is a string of 3 lowercase letters.
+
+# Sigils support 8 different delimiters:
+~r/.../
+~r|...|
+~r"..."
+~r'...'
+~r(...)
+~r[...]
+~r{...}
+~r<...>
+# This is useful to write literals without having escape characters.
+# ~r(^https?://) reads better than ~r/^https?:\/\//
+
+# String, charlists, and wordlists
+
+# String sigil are useful to generate strings with double quotes.
+~s(This is a string containing "a string" and a 'string')
+# returns "This is a string containing \"a string\" and a 'string'"
+
+# Charlist sigil are useful to generate strings with single quotes.
+~c(This is a string containing 'a string' and a "string")
+# returns 'This is a charlist containing \'single quote text\''
+
+# Wordlist sigil are useful to generate lists of words from any string.
+# The words must be separated by whitespaces.
+~w(Saluton Mondo)
+# returns ["Saluton", "Mondo"]
+
+# They also accepts the c, s & a modifiers.
+~w(Saluton Mondo)a
+# returns [:Saluton, :Mondo]
+
+# Interpolation and escaping in string Sigils
+# Lowercase letters perform escaping and interpolation, while
+# uppercase letters do not.
+
+~s(This is a string containing codes \x26 #{1 + 1})
+# returns "This is a string containing codes & 2"
+~S(This is a string containing codes \x26 #{1 + 1})
+# returns "This is a string containing codes \\x26 \#{1 + 1}"
+
+# The following are valid escape codes to use in strings and charlists.
+# \\ - backslash
+# \a - alert
+# \b - backspace
+# \d - delete
+# \e - escape
+# \f - form feed
+# \n - newline
+# \r - carriage return
+# \s - space
+# \t - horizontal tab
+# \v - vertical tab
+# \0 - null byte
+# \xDD - hexadecimal code
+# \uDDDD & \u{D...} - Unicode codepoint in hexadecimal
+
+# Calendar Sigils
+
+# Date
+# It contains fields such as year, month, day, and calendar.
+date = ~D[2016-01-01]
+date.year
+# returns 2016
+
+# Time
+# It contains fields such as hour, minute, second, microsecond, and calendar.
+time = ~T[12:34:56.789]
+time.minute
+# returns 34
+
+# Naive DateTime
+# It contains fields from both Date and Time.
+# It is called 'naive' because it does not contain a timezone.
+datetime = ~N[2016-01-01 12:34:56.789]
+datetime.microsecond
+# returns 789
+
+# UTC DateTime
+# It contains fields from both Date and Time with a timezone.
+# It is called 'UTC' because it is in the UTC timezone.
+datetime = ~U[2016-01-01 12:34:56Z]
+%DateTime{minute: minute, time_zone: time_zone} = datetime
+~s(minute: #{minute}, time_zone: #{time_zone})
+# returns "minute: 34, time_zone: Etc/UTC"
+
+# Custom Sigils
+# We can define our own sigils following the 'sigil_{character}' pattern.
+defmodule MySigils do
+  def sigil_i(string, []) do
+    String.to_integer(string)
+  end
+  # returns the integer value of the string.
+
+  def sigil_i(string, [?n]) do
+    -String.to_integer(string)
+  end
+  # returns the negative integer value of the string.
+end
+~i(123)
+# returns 123
+~i(123)n
+# returns -123
