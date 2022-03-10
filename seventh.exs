@@ -180,5 +180,91 @@ defmodule Parser do
     end
   end
 end
+
 # The function parse! will dispatch to the given parse implementation
 # and return the result or raise an exception if case of error.
+
+# ------------------------------------------------------------------------------
+
+# Debugging
+# Here we have some of the most commons ways of debugging.
+
+# IO.inspect
+# It allows to inspect on values without altering them.
+# It also allow us to provide a custom label for the value.
+1..10
+|> IO.inspect(label: "Range")
+|> Enum.map(fn x -> x * 2 end)
+|> IO.inspect(label: "Doubled")
+|> Enum.sum()
+|> IO.inspect(label: "Sum")
+
+# Range: 1..10
+# Doubled: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+# Sum: 110
+
+# It is common to use IO.inspect with binding() to return
+# all variables names and values.
+def funky(a, b, c) do
+  IO.inspect(binding())
+end
+
+# When called with funky(:foo, "bar", 'baz'),
+# it returns [a: :foo, b: "bar", c: 'baz']
+
+# IEx.pry and IEx.break!
+# IEx.pry is a convenient way to access all variables, imports,
+# aliases, etc., from the code. While running, code execution
+# stops until 'continue' is called in IEx.
+def funky(a, b, c) do
+  require IEx
+  IEx.pry()
+end
+
+# IEx.break! allows to set breakpoints without modifying the code.
+# While running, code execution also stops until 'continue' is called.
+# However, it does not have access to the imports and aliases because
+# it works on the compiled artifact rather than the source code.
+defmodule Funk do
+  def funky(a, b, c) do
+    {a, b, c}
+  end
+end
+IEx.break!(Funk.funky/3)
+# When Funk.funky(:foo, "bar", 'baz') is called, code execution
+# will stop at the function definition.
+
+# Debugger
+# It allows us to debug code with a GUI.
+
+defmodule Example do
+  def double_sum(x, y) do
+    hard_work(x, y)
+  end
+
+  defp hard_work(x, y) do
+    x = 2 * x
+    y = 2 * y
+
+    x + y
+  end
+end
+
+:debugger.start()
+# This will start a debugger session.
+:int.ni(Example)
+# This will prepare the Example module for debugging.
+:int.break(Example, 3)
+# This will set a breakpoint at the third line of the module.
+Example.double_sum(1, 2)
+# This will run the module and stop at the breakpoint. Allowing
+# us to inspect the variables and the stacktrace.
+
+# Observer
+# Useful for debugging complex systems where it is necessary to have
+# an understanding of the whole virtual machine, processes, applications,
+# and tracing mechanisms.
+
+:observer.start()
+# It opens a GUI that provides a visual representation of the runtime
+# and the project to navigate through and understand.
