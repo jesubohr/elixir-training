@@ -230,7 +230,8 @@ defmodule Funk do
     {a, b, c}
   end
 end
-IEx.break!(Funk.funky/3)
+
+IEx.break!(Funk.funky() / 3)
 # When Funk.funky(:foo, "bar", 'baz') is called, code execution
 # will stop at the function definition.
 
@@ -268,3 +269,93 @@ Example.double_sum(1, 2)
 :observer.start()
 # It opens a GUI that provides a visual representation of the runtime
 # and the project to navigate through and understand.
+
+# ------------------------------------------------------------------------------
+
+# Erlang Libraries
+
+# Binary Module
+# Useful when dealing with binary data that is not necessarily
+# UTF-8 encoded.
+String.to_charlist("Ø")
+# [216], it returns Unicode codepoints.
+:binary.bin_to_list("Ø")
+# [195, 152], it returns raw data bytes.
+
+# Formatted Text Output
+# Useful for printing formatted text to the console.
+:io.format("Pi value: ~10.3f~n", [:math.pi()])
+
+# Crypto Module
+Base.encode16(:crypto.hash(:sha256, "Hello World"))
+# returns "A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD9F146E"
+
+# Digraph Module
+# Contains function to deal with directed graphs.
+digraph = :digraph.new()
+coords = [{0.0, 0.0}, {1.0, 0.0}, {1.0, 1.0}]
+[v0, v1, v2] = for c <- coords, do: :digraph.add_vertex(digraph, c)
+:digraph.add_edge(digraph, v0, v1)
+:digraph.add_edge(digraph, v1, v2)
+:diagraph.get_short_path(digraph, v0, v2)
+# returns [{0.0, 0.0}, {1.0, 0.0}, {1.0, 1.0}]
+
+# Erlang Term Storage
+# Its modules 'ets' and 'dets' allow to handle storage of large data
+# structures in memory or disk.
+
+# The ets module modifies the state of the table as a side-effect.
+table = :ets.new(:ets_test, [])
+# In this example, information is stored as tuples.
+:ets.insert(table, {"China", 1_370_000_000})
+:ets.insert(table, {"Mexico", 120_000_000})
+:ets.insert(table, {"Colombia", 50_000_000})
+:ets.i(table)
+# prints an interactive prompt that allows to interact with the table.
+# {<<"Mexico">>,120000000}
+# {<<"Colombia">>,50000000}
+# {<<"China">>,1370000000}
+
+
+# Math Module
+# Contains functions to deal with mathematical operations.
+:math.pi()
+# returns 3.141592653589793
+:math.sqrt(4)
+# returns 2.0
+:math.exp(1)
+# returns 2.718281828459045
+
+# Queue Module
+# Implements FIFO queues efficiently.
+que = :queue.new()
+que = :queue.in("A", que)
+que = :queue.in("B", que)
+{value, que} = :queue.out(que)
+# returns {:value, "A"}
+value
+
+# Rand Module
+# For generating random numbers and setting random seeds.
+:rand.uniform()
+# returns 0.0926552308544333
+:rand.seed(:exs1024, {123, 123_534, 345_345})
+# set the seed
+:rand.uniform()
+# returns 0.5820506340260994
+
+# Zip and Zlib Modules
+# Zip module is useful to read, write & extract information from ZIP files
+# from disk or memory.
+:zip.foldl(fn _, _, _, acc -> acc + 1 end, 0, :binary.bin_to_list("test.zip"))
+# Counts the number of files in the ZIP archive.
+# returns {:ok, 3}
+
+# Zlib module is useful to compress and decompress data in zlib format.
+compressed = :zlib.compress(:binary.bin_to_list("Lorem ipsum dolor sit amet"))
+byte_size(compressed)
+# returns 34
+byte_size("Lorem ipsum dolor sit amet")
+# returns 26
+:zlib.uncompress(compressed)
+# returns "Lorem ipsum dolor sit amet"
