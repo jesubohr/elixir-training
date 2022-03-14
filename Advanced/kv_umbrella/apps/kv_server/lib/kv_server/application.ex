@@ -7,7 +7,7 @@ defmodule KVServer.Application do
 
   @impl true
   def start(_type, _args) do
-    port = String.to_integer(System.get_env("PORT") || "4000")
+    port = String.to_integer(System.get_env("PORT") || "4040")
 
     children = [
       {Task.Supervisor, name: KVServer.TaskSupervisor},
