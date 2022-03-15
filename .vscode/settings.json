@@ -1,4 +1,4 @@
 {
-   "terminal.integrated.defaultProfile.windows": "Windows PowerShell",
    "files.insertFinalNewline": true,
+   "elixirLS.projectDir": "./Advanced/kv_umbrella"
 }
