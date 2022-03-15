@@ -42,35 +42,28 @@ defmodule KVServer.Command do
   """
   def run(command, pid)
 
-  def run({:create, bucket}, pid) do
+  def run({:create, bucket}, _pid) do
     case KV.Router.route(bucket, KV.Registry, :create, [KV.Registry, bucket]) do
       pid when is_pid(pid) -> {:ok, "OK\r\n"}
       _ -> {:error, "Failed to create bucket"}
     end
-
-    KV.Registry.create(pid, bucket)
-    {:ok, "Bucket created\r\n"}
   end
 
-  def run({:get, bucket, key}, pid) do
-    case KV.Router.route(bucket, KV.Registry, :get, [KV.Registry, bucket]) do
-      pid when is_pid(pid) ->
-        lookup(bucket, fn pid ->
-          value = KV.Bucket.get(pid, key)
-          {:ok, "#{value}\r\nOK\r\n"}
-      end)
-      _ -> {:error, "Failed to get value for key"}
-    end
+  def run({:get, bucket, key}, _pid) do
+    lookup(bucket, fn pid ->
+      value = KV.Bucket.get(pid, key)
+      {:ok, "#{value}\r\nOK\r\n"}
+    end)
   end
 
-  def run({:put, bucket, key, value}, pid) do
+  def run({:put, bucket, key, value}, _pid) do
     lookup(bucket, fn pid ->
       KV.Bucket.put(pid, key, value)
       {:ok, "OK\r\n"}
     end)
   end
 
-  def run({:delete, bucket, key}, pid) do
+  def run({:delete, bucket, key}, _pid) do
     lookup(bucket, fn pid ->
       KV.Bucket.delete(pid, key)
       {:ok, "OK\r\n"}
